@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Student_Registration.Application.Interfaces;
 using Student_Registration.Infrastructure.Context;
+using Student_Registration.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,8 @@ builder.Services.AddDbContextFactory<StudentRegistrationDbContext>(options =>
 });
 
 builder.Host.UseSerilog();
+
+builder.Services.AddScoped<IStudentRegistrationRepository, StudentRegistrationRepository>();
 
 var app = builder.Build();
 
