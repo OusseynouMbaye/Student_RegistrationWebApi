@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Student_Registration.Application.Interfaces;
-using Student_Registration.Domain;
+using Student_Registration.Domain.Dtos.StudentsDto;
 
 namespace Student_Registration.Webui.Controllers
 {
@@ -8,7 +8,7 @@ namespace Student_Registration.Webui.Controllers
     [Route("api/students/")]
     public class StudentControllers : Controller
     {
-       private readonly IStudentRegistrationRepository _studentRegistrationRepository;
+        private readonly IStudentRegistrationRepository _studentRegistrationRepository;
 
         public StudentControllers(IStudentRegistrationRepository studentRegistrationRepository)
         {
@@ -22,7 +22,7 @@ namespace Student_Registration.Webui.Controllers
             return Ok(students);
         }
 
-        [HttpGet("{studentId}")]
+        [HttpGet("{studentId}", Name = "GetStudentByIdAsync")]
         public async Task<IActionResult> GetStudentByIdAsync(int studentId)
         {
 
@@ -31,9 +31,9 @@ namespace Student_Registration.Webui.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateStudentAsync([FromBody] Student student)
+        public async Task<IActionResult> CreateStudentAsync([FromBody] StudentForCreation newStudent)
         {
-            if (student == null)
+            if (newStudent == null)
             {
                 return BadRequest("Student object is null");
             }
@@ -43,16 +43,22 @@ namespace Student_Registration.Webui.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                await _studentRegistrationRepository.CreateStudentAsync(student);
-                return CreatedAtRoute(nameof(GetStudentByIdAsync), new { id = student.id }, student);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception (ex) here as needed
-                return StatusCode(500, "Internal server error");
-            }
+            // Création de l'entité Student
+            var studentEntity = new Student(
+                Id: 0, // Laisse l'ID à 0 ou omets-le si auto-généré
+                Name: newStudent.Name,
+                Age: newStudent.Age,
+                Address: newStudent.Address,
+                Gender: newStudent.Gender,
+                PhoneNum: newStudent.PhoneNum
+            );
+
+            // Ajout au dépôt
+            await _studentRegistrationRepository.AddStudentAsync(studentEntity);
+            await _studentRegistrationRepository.SaveChangesAsync();
+
+            // Retourne une réponse Created avec l'URI de la ressource
+            return CreatedAtRoute("GetStudentByIdAsync", new { studentId = studentEntity.Id }, studentEntity);
         }
 
     }
