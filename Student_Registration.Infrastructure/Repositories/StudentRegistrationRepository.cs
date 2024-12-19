@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Student_Registration.Application.Interfaces;
-using Student_Registration.Domain;
+using Student_Registration.Domain.Dtos.StudentsDto;
 using Student_Registration.Infrastructure.Context;
 
 namespace Student_Registration.Infrastructure.Repositories
@@ -19,21 +19,28 @@ namespace Student_Registration.Infrastructure.Repositories
             return await _studentRegistrationContext.Students.ToListAsync();
         }
 
-        public Task<Student> GetStudentByIdAsync(int id)
+        public async Task<Student?> GetStudentByIdAsync(int id)
         {
-            return _studentRegistrationContext.Students.FirstOrDefaultAsync(s => s.id == id);
+            return await _studentRegistrationContext.Students.FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        //public async Task CreateStudentAsync(Student student)
-        //{
-        //    _studentRegistrationContext.Add(student);
-        //    await _studentRegistrationContext.SaveChangesAsync();
-        //}
 
-       public async Task<int> CreateStudentAsync(Student student)
+        public async Task AddStudentAsync(Student student)
         {
-           _studentRegistrationContext.Add(student);
-           return await _studentRegistrationContext.SaveChangesAsync();
+            var existingStudent = await GetStudentByIdAsync(student.Id);
+            if (existingStudent != null)
+            {
+                throw new InvalidOperationException($"A student with ID {student.Id} already exists.");
+            }
+
+            await _studentRegistrationContext.Students.AddAsync(student);
         }
+
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _studentRegistrationContext.SaveChangesAsync()) > 0;
+        }
+
     }
 }
