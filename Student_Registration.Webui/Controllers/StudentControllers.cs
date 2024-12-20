@@ -27,6 +27,12 @@ namespace Student_Registration.Webui.Controllers
         {
 
             var student = await _studentRegistrationRepository.GetStudentByIdAsync(studentId);
+
+            if (student == null)
+            {
+                return NotFound($"Student with ID {studentId} not found.");
+            }
+
             return Ok(student);
         }
 
