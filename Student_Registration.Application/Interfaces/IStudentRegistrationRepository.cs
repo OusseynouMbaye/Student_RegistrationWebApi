@@ -1,4 +1,4 @@
-﻿using Student_Registration.Domain.Dtos.StudentsDto;
+﻿using Student_Registration.Domain.Entities.StudentsEntities;
 
 namespace Student_Registration.Application.Interfaces
 {

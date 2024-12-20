@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Student_Registration.Application.Interfaces;
-using Student_Registration.Domain.Dtos.StudentsDto;
+using Student_Registration.Domain.Entities.StudentsEntities;
 
 namespace Student_Registration.Webui.Controllers
 {

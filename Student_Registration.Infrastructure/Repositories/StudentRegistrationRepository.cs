@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Student_Registration.Application.Interfaces;
-using Student_Registration.Domain.Dtos.StudentsDto;
+using Student_Registration.Domain.Entities.StudentsEntities;
 using Student_Registration.Infrastructure.Context;
 
 namespace Student_Registration.Infrastructure.Repositories
