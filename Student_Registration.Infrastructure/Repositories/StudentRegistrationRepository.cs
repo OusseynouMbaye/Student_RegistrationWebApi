@@ -42,5 +42,17 @@ namespace Student_Registration.Infrastructure.Repositories
             return (await _studentRegistrationContext.SaveChangesAsync()) > 0;
         }
 
+        public async Task DeleteStudentAsync(int studentId)
+        {
+            var student = await GetStudentByIdAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"No student found with ID {studentId}.");
+            }
+
+            _studentRegistrationContext.Students.Remove(student);
+        }
+
+
     }
 }

@@ -10,5 +10,7 @@ namespace Student_Registration.Application.Interfaces
         Task AddStudentAsync(Student student);
 
         Task<bool> SaveChangesAsync();
+
+        Task DeleteStudentAsync(int studentId);
     }
 }

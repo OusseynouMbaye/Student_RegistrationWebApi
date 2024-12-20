@@ -25,7 +25,6 @@ namespace Student_Registration.Webui.Controllers
         [HttpGet("{studentId}", Name = "GetStudentByIdAsync")]
         public async Task<IActionResult> GetStudentByIdAsync(int studentId)
         {
-
             var student = await _studentRegistrationRepository.GetStudentByIdAsync(studentId);
 
             if (student == null)
@@ -65,6 +64,32 @@ namespace Student_Registration.Webui.Controllers
 
             // Retourne une réponse Created avec l'URI de la ressource
             return CreatedAtRoute("GetStudentByIdAsync", new { studentId = studentEntity.Id }, studentEntity);
+        }
+
+        [HttpDelete("{studentId}")]
+        public async Task<IActionResult> DeleteStudentAsync(int studentId)
+        {
+            try
+            {
+                // Appelle la méthode de suppression du dépôt
+                await _studentRegistrationRepository.DeleteStudentAsync(studentId);
+
+                // Sauvegarde les changements
+                await _studentRegistrationRepository.SaveChangesAsync();
+
+                // Retourne un statut 204 No Content
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                // Retourne un statut 404 si l'étudiant n'existe pas
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Retourne un statut 500 en cas d'erreur interne
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
     }
