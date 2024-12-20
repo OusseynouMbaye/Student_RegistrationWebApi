@@ -21,7 +21,7 @@ namespace Student_Registration.Infrastructure.Repositories
 
         public async Task<Student?> GetStudentByIdAsync(int id)
         {
-            return await _studentRegistrationContext.Students.FirstOrDefaultAsync(s => s.Id == id);
+            return await _studentRegistrationContext.Students.FindAsync(id);
         }
 
 
