@@ -36,6 +36,16 @@ namespace Student_Registration.Infrastructure.Repositories
             await _studentRegistrationContext.Students.AddAsync(student);
         }
 
+        public async Task UpdateStudentAsync(Student student)
+        {
+            var existingStudent = await GetStudentByIdAsync(student.Id);
+            if (existingStudent == null)
+            {
+                throw new KeyNotFoundException($"No student found with ID {student.Id}.");
+            }
+
+            _studentRegistrationContext.Students.Update(student);
+        }
 
         public async Task<bool> SaveChangesAsync()
         {

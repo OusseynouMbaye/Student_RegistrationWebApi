@@ -8,7 +8,7 @@ namespace Student_Registration.Application.Interfaces
         Task<Student?> GetStudentByIdAsync(int id);
         //Task<int> CreateStudentAsync(Student student);
         Task AddStudentAsync(Student student);
-
+        Task UpdateStudentAsync(Student student);
         Task<bool> SaveChangesAsync();
 
         Task DeleteStudentAsync(int studentId);
