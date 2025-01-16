@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Student_Registration.Application.Interfaces;
-using Student_Registration.Domain.Dtos.StudentsDto;
+using Student_Registration.Domain.Entities.StudentsEntities;
+using Student_Registration.Webui.Dtos.StudentsDtos;
+
 
 namespace Student_Registration.Webui.Controllers
 {
@@ -40,12 +43,7 @@ namespace Student_Registration.Webui.Controllers
         {
             if (newStudent == null)
             {
-                return BadRequest("Student object is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
             // Création de l'entité Student
@@ -65,6 +63,39 @@ namespace Student_Registration.Webui.Controllers
             // Retourne une réponse Created avec l'URI de la ressource
             return CreatedAtRoute("GetStudentByIdAsync", new { studentId = studentEntity.Id }, studentEntity);
         }
+
+        [HttpPatch("{studentId}")]
+        public async Task<IActionResult> UpdateStudentPartiallyAsync(int studentId, [FromBody] JsonPatchDocument<Student> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest("Patch document is null");
+            }
+
+            // Récupérer l'étudiant depuis le repository
+            var studentEntity = await _studentRegistrationRepository.GetStudentByIdAsync(studentId);
+            if (studentEntity == null)
+            {
+                return NotFound($"Student with ID {studentId} not found.");
+            }
+
+            // Appliquer le patch au modèle récupéré
+            patchDocument.ApplyTo(studentEntity);
+            //patchDocument.ApplyTo(studentEntity, ModelState);
+
+            // Vérifier si le modèle est valide après application
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
+            // Sauvegarder les modifications
+            await _studentRegistrationRepository.UpdateStudentAsync(studentEntity);
+            await _studentRegistrationRepository.SaveChangesAsync();
+
+            return NoContent(); // Répond avec un 204 No Content pour indiquer que tout s'est bien passé
+        }
+
 
         [HttpDelete("{studentId}")]
         public async Task<IActionResult> DeleteStudentAsync(int studentId)

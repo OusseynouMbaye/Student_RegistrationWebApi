@@ -1,8 +1,12 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Student_Registration.Application.Interfaces;
 using Student_Registration.Infrastructure.Context;
 using Student_Registration.Infrastructure.Repositories;
+using Student_Registration.Webui.Dtos.StudentsDtos;
+using Student_Registration.Webui.Dtos.StudentsDtosValidator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +19,11 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<StudentForCreationValidator>();
+
+//builder.Services.AddScoped<IValidator<StudentForCreation>, StudentForCreationValidator>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

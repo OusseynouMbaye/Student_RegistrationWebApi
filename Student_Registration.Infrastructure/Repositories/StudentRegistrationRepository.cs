@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Student_Registration.Application.Interfaces;
-using Student_Registration.Domain.Dtos.StudentsDto;
+using Student_Registration.Domain.Entities.StudentsEntities;
 using Student_Registration.Infrastructure.Context;
 
 namespace Student_Registration.Infrastructure.Repositories
@@ -36,6 +36,16 @@ namespace Student_Registration.Infrastructure.Repositories
             await _studentRegistrationContext.Students.AddAsync(student);
         }
 
+        public async Task UpdateStudentAsync(Student student)
+        {
+            var existingStudent = await GetStudentByIdAsync(student.Id);
+            if (existingStudent == null)
+            {
+                throw new KeyNotFoundException($"No student found with ID {student.Id}.");
+            }
+
+            _studentRegistrationContext.Students.Update(student);
+        }
 
         public async Task<bool> SaveChangesAsync()
         {
