@@ -7,9 +7,9 @@ namespace Student_Registration.Webui.Dtos.StudentsDtosValidator
     {
         public StudentForCreationValidator()
         {
-            RuleFor(student => student.Name).NotEmpty().WithMessage("You should provide a name value.").MaximumLength(50);
+            RuleFor(student => student.Name).NotEmpty().WithMessage("You should provide a name value.").MaximumLength(50).WithMessage("Name must be less than 50 characters.");
 
-            RuleFor(student => student.Age).InclusiveBetween(10, 30).WithMessage("Age must be between 10 and 30.");
+            RuleFor(student => student.Age).NotNull().WithMessage("Age must be between 10 and 30.").InclusiveBetween(10, 30).WithMessage("Age must be between 10 and 30.");
         }
     }
 }
