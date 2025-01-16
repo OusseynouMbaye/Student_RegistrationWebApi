@@ -43,12 +43,7 @@ namespace Student_Registration.Webui.Controllers
         {
             if (newStudent == null)
             {
-                return BadRequest("Student object is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
             // Création de l'entité Student
